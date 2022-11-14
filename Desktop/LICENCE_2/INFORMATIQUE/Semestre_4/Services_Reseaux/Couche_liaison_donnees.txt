@@ -1,0 +1,40 @@
+La couche liaison dee donnees du modele OSI
+C'est une couche qui permet la connection entre les couches superieurs dites intelligentes 
+et les couches inferieurs dites non intelligentes.
+.Elle acceptent les donnees provenant des couches superieurs, les preparant dans des trames
+ pour les envoyer sur le support de transmission au niveau de l'emetteur. On parle d'encapsulation
+.Insversement, elle accepte les donnees provenant des supports de transmission, les preparant pour
+transmettre vers les couches superieurs dans le cas du repcepteur. On parle de désencapsulation.
+
+Objetif : Elle permet le transfert des donnees sur les liaisons de physiques du reseau
+ La couche LDD est divisee en deux soux-couches : 
+- Controle de la logique ou LLC (Logical Link Controle) : Cette sous-couche communique directement
+ avec la couche reseau du modele OSI; elle indique le protocole de reseau utilisé pour la trame.
+ Ainsi, plusieurs protocoles de couche 3 (par exemple IPv4 et IPv6) peuvent utiliser la meme interface
+ et les memes supports.
+- Controle d'acces au support ou MAC (Medium Access Control) : Elle offre le moyen pour traiter les differents 
+ technologies des reseaux et permet d'y acceder.
+La couche LDD offre plusieurs services :
+1) L'Adressage physique
+	Elle est utilisée lors d'une communication dans un sous-reseau
+	l'adressse physique ou adresse MAC est ajoutee sur l'en-tete de la trame.
+2) Le Tramage qui consiste à encapsuler un paquet dans une trame (en ajoutant une entête et un code de fin) pour le transport à travers les supports;
+	Structure d'une trame
+	1- Une en-tête :  Il contient des informations de contrôle telles l'adressage et est situé au debut de l'unité de donnéeds de protocoles.
+	2- Partie données : Correspondant au PDU de la couche 3. Dans un réseau TCP/IP, c'est un paquet.
+	3- La fin de la trame : Elle contient des informations de controle pour la detection d'erreurs.
+
+3) Le controle d'erreur : realisé par la sous-couche LLC. Ce service se resume dans la detection et la correction d'erreur.
+4) Le Controle de flux : regler le débit pour que le noeud ne soit pas depasse par le flux.
+5) Le Controle d'acces : il s'agit de la gestion du placement des trames sur les supports. 
+
+ 
+
+
+
+
+
+
+
+
+

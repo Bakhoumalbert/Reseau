@@ -1,0 +1,152 @@
+
+****************************************************
+Composition du datagramme IP
+****************************************************
+Le Datagramme IP est divise en plusieurs mots de 32bits = 4 octets
+Il est compose de 14 champs. Une ligne peut contenir plusieurs champs.
+Ainsi on va detailler ces champs : 
+
+***** Le premier mot ******
+1) Version : Le premier champ, codé sur 4 bits nous indique la version du protocole IP utilisée.
+	Exemple : 0100 (4 en decimale) --> IPv4
+		  0110 (6 en decimale) --> IPv6
+2) HLEN ou IHL : Ce champ de 4 bits nous indique la longueur de l'en-tête IP par multiple de 32 bits.
+	Le nombre de mots depend de la présence des champs d'option et de remplissage, il est compris entre 5 et 15.
+
+3) ToS (Type of Service) : codé sur 8 bits, il definit l'importance d'un paquet. Le critere de selection est comprise entre : D (Delay = Délai), T (Throughtput = débit), R (Reliability = fiabilité)
+	Maintenant, on est passe de TOS vers Diffserv
+	DiffServ (Differentiated Services) : Il est compose de deux parties : 
+		- DSCP (Differentiated Service Code Point) : definit la priorité du paquet.
+		- ECN (Explicit Congestion Notification) : utilisés comme bits de notifications 
+			de congestion pour éviter l'abondant des paquets au moment de l'encombrement du reseau.
+
+4) Total Lenght : Ce champ de 16 bits indique la taille, en octets, du paquet IP (en-tête + données).
+	Sa valeur est comprise entre 20 et 65.535 octets.
+
+***** Le second mots *****
+Il est à noter qu’un routeur tient compte de le taille maximale des données transportées sur un réseau 
+physique, appelée aussi charge utile (payload).
+Ainsi, le routeur peut, dans certains cas, fragmenter un paquet.
+
+5) Identification ou frgment IP : identifie un fragment par rapport au paquet IP d'origine afin de pouvoir les rassembler plus tard.
+
+6) Flag ou drapeau ou Indicateur : Codé sur 3 bits, indique si le paquet est, peut être ou pas être fragmenté.
+	- Le premier bit est toujours à 0;
+	- Le dexième bit << Don't Fragment >>, 
+		s'il est égal à 1, indique le datagramme ne peut pas etre fragmenté
+		s'il est égal à 0, indique le datagramme peut etre fragmenté
+	- Le troisième bit << More Fragment >>, 
+		s'il est égal à 1, indique le paquet est un fragment
+		s'il est égal à 0,  soit le fragment est le dernier, soit le paquet n'a pas été fragmenté.
+
+7) Fragment Offset ou Décalage Frament, code sur 13 bits, il indique la position du début du fragment dans le paquet d'origine.
+
+***** Le troisieme mots *****
+8) Time To Live (TTL) : Chaque fois qu'un paquet est traité par un routeur, le champ du durée de vie est décrementé de 1.
+	Une fois qu'il atteint 0, le routeur abandonne le paquet et envoie un message ICMP (temps dépassé) à l'expéditeur.
+
+9) Protocol : Il est codé sur 8 bits et indique quel protocole est encapsulé dans le paquet IP.
+	Exemple : En decimal, 0 -> IP, 1 -> ICMP, 6 -> TCP, 17 -> UDP
+
+10) Header Checksum :  Elle est sur 16 bits et vérifie l'intégrité de l'entéte.
+	Une valeur de contrôle de l'en-tête est calculée puis comparée à la valeur dece champ.
+	Le paquet est rejeté si les deux valeurs ne sont pas égales.
+***** le quatrième mots ****
+11) Source Adress
+
+***** Le cinquième mots **** 
+12) Destination Adress
+
+**** Le 
+13) Options : Ce champ n'est pas souvent utilisé, est facultatif et sa longueur varie suivant les options utilisées.
+14) Padding : Etant donné que la longueur d'une en-tête doit être un multiple de 32 bits, dont le padding consiste 
+	à mettre les bits restant à O si Total Lenght != nombre de bits utilisé.
+
+
+*** Table de routage ***
+La table de routage est un fichier de données stocké et chargé dans la mémoire vive à chaque démarrage du routeur.
+De manière général, la table de routage est une correspondance entre l'adresse de sous-reseau et le prochain routeur
+par le quel arrive le paquet ou l'interface de sortie. L'adresse de destination est une adresse de sous-réseau.
+Le routeur identifie les routes vers les réseaux.
+Lorsqu'on connecte les routeurs, ces derniers vont s'envoyer des paquets de decouvertes. Afin de découvrir les réseaux
+qui lui sont directement connecté.
+
+*********************************************************
+	Table de routage : au niveau du routeur 
+*********************************************************
+Dans une table de routage, on distingue 3 types de routes :
+1) Les routes directement connectées : le routeur identifie, de manière automatique, les sous-réseaux qui lui sont directement connectés.
+	Ces routes sont importantes pour des routes vers les réseaux distants.
+2) Les Routes distantes : Les réseaux sont ajoutés à la table de routage grâce à la configuration de "routes statiques" ou à l'activation d'un
+	"protocole de routage". Ce dernier permet à un routeur d'échanger des données de routage avec d'autres routeurs.
+	NB : Les routes statiques sont les routes qui sont remplis manuellement par l'administrateur réseau.
+
+3) Les Routes par défaut : défini par l'adresse 0.0.0.0, elle permet d'acheminer un paquet dont la destination ne correspond
+	à aucune autre route de la table de routage 
+
+- Pour consulter la table de routage, on peut utiliser la commade : show ip route
+
+S'il existe plusieurs routes pour la meme destination, Alors la métrique est utilisée pour choisir quelle route utiliser.
+- La métrique peut correspondre au nombre de sauts, à la bande passante, au délai, à la fiablité, etc. 
+
+- Si l'adresse Ip de destination du paquet n'appartient ni à unréseau connecté ni à un réseau distant, et en plus le réseau ne 
+	posséde pas de route par défaut, alors la paquet est abandonné.
+	Ainsi il envoie un message ICMP de destination inaccessible à l'adresse IP source du paquet.
+
+*********************************************************
+	Table de routage : au niveau de l'hôte
+*********************************************************
+Un hôte peut envoyer un paquet à:
+	- lui même : avec l'adresse de localhost 127.0.0.1;
+	- un hôte local : qui se trouve sur le même sous-réseau que lui;
+	- un hôte distant : situé dans un autre réesau.
+Dans le cas d'hôte distant : Le paquet doit être dirigé suivant la route par defaut : Identifiée par l'adresse de passerelle (le routeur).
+	- Pour afficher la table de routage d'une hôte, on utilise soit netstat -r opu route PRINT (sous Windows)
+
+Le routage distant peut etre statique ou dynamique : 
+	_ Le routage statique se caracterise par : 
+		. les tables sont configurées manuellement par l'administrateur;
+		. ne dépend pas de l'etta du réseau;
+		. le choix de la route est défini une fois pour toutes et ne change pas;
+		. Simple mais il n'est pas adapté à la défaillance d'un lien
+		. adapté au petit réseau;
+		. l'administrateur doit proceder à des mises à jours dans le cas de changement de la topologie du réseau;
+		. Charge du systeme réduite : pas de mise à jour fréquentes. 
+	_ Le routage dynamique se caractérise par :
+		. Le chemin emprunté est en fonction de l'état de routage.
+		. Les tables de routages sont réglièrement mise à jour;
+		. Plus complexe;
+		. Surcharge de réseau à cause de l'échange d'information;
+		. Permet de choisir la route optimale
+		il existe des protôles de rutage dynawimque : 
+			-  Distance Vector (distance de vecteur) :
+				. Les routes sont exprimées sous forme de vecteur;
+				. Chaque routeur envi=oie une mise à jour de sa table dans son intégralité régulièrement;
+				. Utilise l'algorithme de BELLMAN-FORD pour calculer le chemin optimal vers une route;
+				. On trouve plusieurs types de protocôles : 
+					- RIP (Routing Information Protocol)
+					- IGRP (Interior Gateway Routing Protocol)
+					- EIGRP (Enhanced Interior Gateway Routing Protocol)
+
+			-  Link State (états de lien) : 
+				. Chaque route reçoit plus d'information (par rapport aux algorithmes à vecteur de distance)
+					il possède une vue générale du réseau
+				. les mise à jour ne sont eb=nvoyées que lorsqu'une route est modifiée;
+				. Utilise l'algorithme de Dijkstra pour calculer le chemin optimal vers une route;
+				. On trouve plusieurs types de protocôles : 
+					- OSPF (Open Shortest Path First)
+					- IS-IS (Intermediate System-to-Intermediaire System)
+					- BGP (Border Gateway Protocol)
+
+******************************
+Hiérarchie des protocoles
+******************************
+On sait qu'internet est un ensemble de sous-réseau interconnecté; il xiste ce que l'on appelle des
+AS (Autonomous System) : c'est lorsque un enseble de réseau (LAN, MAN) dont l'administration des routeurs est commune.
+Le protocole de routage utilisé pour des routeurs du même domaine AS puisse échangés des donées est le protocole IGP (Interior Gateway Protocol).
+NB : Il peut arriver à des routeurs de AS différent de communiquer; on parle de routeur de bordure et utilise le protocole EGP (Exterior Gateway protocol).
+
+
+
+
+

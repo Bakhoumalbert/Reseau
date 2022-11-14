@@ -1,0 +1,89 @@
+Dans GNS3, la barre à droite, contient du haut vers le bas : Un routeur, un switches, un PC, un pare-feu
+
+TP1: 
+1- Se familiariser avec les equipements reseaux : Cartes reseaux, Switches, routeurs
+2- Faire le premier mise en reseau
+3- Comprendre le role des protocoles ICMP/ et ARP
+
+***Les routeurs
+Un routeur est constitie :
+	- processeur
+	- quatre types de memoires 
+	- interfaces
+Les configurations sont stockees dans la memoire RAM
+Les systemes d'exploitations sont stockes dans la memoire flash
+Les fichiers de configurations sont stockes dans la memoire NVRAM
+
+
+
+
+
+
+
+
+
+
+***** Le procesus de demarrage d'une machine ****
+Le programme de demarrage (le bios) est integre dans la carte mere, en memoire RAM :
+	1- le bios ou l'UEFI qui se trouve sur la carte mere se charge
+	2- le bios ou l'UEFI s'execute et detecte les peripheriques
+	3- le bios ou l'UEFI regarde la secance de boot (ordre de demarrage)
+	4- Dans le cas ou on va sur le Disque Dur, le Bios voit le premier secteur 
+		appelé MBR (Master Boot Recort) à la recherche de SE
+	5- Le Bios passe la main au lanceur qui demande à l'utilisateur de choisir
+		le SE à lancer
+	6- Apres avoir choisit le SE, le lanceur liu passe la main 
+	7- Le SE se charge et demande à l'utilisateur de s'authentifier
+
+
+*** Un routeur ***
+
+
+*** Mode d'acces d'un routeur ***
+Il y a globalement trois methodes d'acces à l'interface d'un routeur pour mieux le configurer :
+	1) Cable console : on peut utiliser un cable console connecter sur le routeur et la machine
+	Dans ce cas, il faut utiliser un logiciel de communication serie pour faire passer les 
+	commandes à travers la cable console. on peut utiliser les logiciels comme puttty et minicom
+	Dans le parametrage du logiciel, il faut indiquerle port sur lequel est connecté notre routeur
+	(COM1, COM2, ...,COMx sur windows et /dev/ttySx sur linux)
+	2) Pour la connectivité à distance, en utilisant telnet (connection à distance non sécurisé)
+	ou ssh : secure shell (connection securise : connection cryptee)
+	3) Par le port AUX, on utiliseun modele analogique (modele ancien). On compose un numero de
+	telephone fixe pour accéder à linterface du routeur afin de le configurer. 
+
+*** Mode d'utilisation ***
+Il y a plusieurs mode d'utilisation d'un routeur :
+	- mode utilisateur simple ($)
+	- mode privilegie ou mode administrateur (#)
+		. enable : losrqu'on a un routeur physique
+	- mode config permettant de taper des commandes de configuration 
+		. conf t : lorsqu'on est dans GNS3
+	- mode interface permettant de donner une adresse IP et un masque IP à une carte reseau du routeur
+	les interfaces sont nommées par rapport aux slots du routeur.
+		. int fa0/0 (pour l'interface fa0/0)
+		une interface est toujours en shutwown (eteint); pour l'activer, on utilise la commande "no sh" (no shutdown) 
+
+*********************************************************************************
+Chaque machine dans le reseau doit avoir une adresse IP unique de la forme 192.168.1.x par exemple avec x € [1,254]
+tous les machines on le même masque de reseau 255.255.255.0 
+*********************************************************************************
+
+*** Le protocole ICMP ***
+C'est un protocole, entre autre pour tester la connectivite avec une autre machine connaissant son adresse IP
+	- Ainsi en faisant un ping XXXX.XXXX.XXXX.XXXX, on verifie si la machine est connectee ou pas
+		si oui, la machine recois des message de type ICMP
+
+*** Le protocole ARP : Address Resolution Protocol ***
+C'est un protocole permettant de convertir l'adresse IP en adresse MAC
+
+
+*** WIRESHARP est un logiciel qui permet de capturer et d'afficher les trames
+
+
+
+
+
+
+
+
+

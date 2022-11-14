@@ -1,0 +1,89 @@
+Definition
+C'est le protocole qui converti l'adresse IP d'une machine en adresse MAC
+
+** Fonctionement **
+Copmmunication entre une machine et une machine B
+1) A envoie une tequête ARP (message de diffusion : message envoyer a tous les machines du reseau)
+2) Toutes les machines sur le reseau recoivent le message mais seulement la machine concernee repond
+3) La machine B ajoute le MAC de A sur la table de correspondance
+4) La machine B reponds a la requête
+5) La machine A recoit la requête et ajoute le MAC de B sur la table de correspondance
+
+-Pour obtenir la table de correspondance, on tape la commande : arp -a ou show arp (sur gns3) 
+
+
+****************************************
+Protocole IPv4
+****************************************
+
+Entete IPv4
+La particularite dans l'entete IPv4 est que les champs vont etre regroupes dans des mots
+C'est un protocole qui se trouve sur la couche 3 du modele OSI
+Elle est codee sur 32 bits
+
+***************************************************************
+12/11/2022
+***************************************************************
+1) Compredre l'interet des protocoles ARP, ICMP
+
+ARP est un protocole de la couche internet utilise par une machine pour demander l'adresse MAC d'une machine
+connaissant son adresse IP
+***Quels sont les messages de type ARP envoie par des machines ?
+ a- Les messages ARP Request envoye par diffusion
+ b- Les messages ARP Reply qui sont des reponses aux messages de types ARP Request
+Les trames ethernet contenant des messages de types ARP sont particulieres et ne contiennent pas de datagramme IP
+Pourquoi on ne peut pas transmettre un message ARP d'un reseau à un autre ?
+Parce les messages de types ARP ne peuvent etre transmis d'un reseau IP a un autre (sauf dans les cas tres particuliers)  
+
+Remarque : 
+Une machine virtuel accede a un reseau de plusieurs manieres :
+- Mode NAT : la machine virtuel est dans un autre reseau que la machine physique; une autre machine qui trouve dans 
+le reseau physique ne peut pas comminuquer avec cette machine viruelle.
+- Mode pont : la machine virtuelle est dans le meme reseau que la machine physique.
+Attention : Il faut choisir la carte reseau physique qui joue le rôle du pont (carte Ethernet ou carte wifi)
+
+Processus d'obtention d'elements TCP/IP par une machine via un serveur DHCP (Dynamic Host Configuration Protocol)
+1- Une machine envoie par diffusion un mesage appele DHCPDISCOVER pour decouvrir  un serveur DHCP dans le reseau
+2- Un serveur DHCP qui est dans le reseau repond par un message DHCPOFFER contenant des elements TCP/IP proposes
+3- la machine cliente demande une confirmation en envoyant un message DHCPACK
+A la reception de DHCPACK, la machine s'auto-configure
+
+Un message de type ICMP est envoye via la commande ping AdresseIP pour tester la connectivite avec la machine dont l'adresse IP est fournie
+
+Quant onb change de reseau, on supprimme l'adresse par la commande dhclient -r
+et on demande une autre adresse par la commande dhclient -d
+
+Quand une machine a communique avec une autre dans un meme reseau, elle rajoute la correspondance IP Adresse MAC dans 
+sa table ARP accessible par la commande arp -a.
+
+
+Une machine Windows accede a un reseau selon le profil : public, privee ou domaine
+-Avec le profil public : cela signifie que le reseau n'est pas sûr donc il faut activer le pare-feu pour proteger ma machine.
+	Dans ce cas les dossiers partages ne seront pas accessible sur ma machine.
+- Avec la profil privee :  Cela signifie que le reseau est sûr donc elle peut alleger les regles de pare-feu et 
+- Avec le profit Domaine : les regles de securite de la machine sont geres
+
+Une carte reseau fonctionnant en mode promiscuite permet de d'accepter toute les trames meme celle qui ne lui sont pas destines.
+
+
+
+
+
+
+2) Routage direct et routage indirect
+
+Deux interfaces d'un meme routeur ne doivent pas etre dans un meme reseau
+Une trame nee dans un meme reseau
+Exemple : 
+R1 = 192.168.1.0/24
+	ip 192.168.1.1/24 192.168.1.254
+	ip 192.168.1.2/24 192.168.1.254
+
+R2 = 172.16.0.0/24
+	ip 172.16.0.3/24 172.16.0.254 (passerele)
+
+
+
+
+3) Savoir faire des configuration de base de routeur et switch
+

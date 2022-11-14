@@ -1,0 +1,83 @@
+Architecture d'un routeur Cisco
+MVRAM
+FLASH
+IOS SUR routeur 
+
+1) Comprendre l'adresse IP : Adresse IP, Masque de reseau, Passerelle, DNS
+2) Processus de communication entre 2 machines dans un reseau IP : Application d'un masque de reseau a une adresse IP, message ARP
+3) Segmentation d'un reseau en sous-reseaux
+4) Comprendre le format d'un datagramme IP et les principales fonctions d'un routeur
+
+1- ADRESSAGE RESEAU IP
+Dans un reseau IP, chaque interface reseau est identifie par son reseau IP de le forme a.b.c.d
+ou a, b, c, d sont des octets sous forme decimale
+Un octet a pour valeur maximale 255
+Un lasque de reseau est de la forme aussi A.B.C.D . Tousb les premieres bits (de la gauche vers la droite) sont à 1 et le res*te sont des bits sont à 0.
+Le masque de reseau d'une machine lui permet de connaitre les machines qui sont dans son reseau et celle qui n'y sont pas.
+
+Une adresse IP est constituee de deux partie : NET-ID (adresse reseau) et HOST-ID (adresse machine)
+
+***Régles : 
+
+1) Si tous les bits de la partie Host-ID sont a 0, alors l'adresse IP est appelée Adresse Reseau
+2) C'est la longueur de masque de réseau qui determine 
+4) L'adresse reseau est obtenu en appliquant le masque de reseau a l'adresse IP
+	C'est à dire en additionnant bit à bit l'adresse IP au masque de réseau 
+Ainsi un réseau IP est connu si on donne le couple Adresse Reseau/ Masque de Reseau
+Par exemple : Soit le réesau IP 192.168.1.0/24 : ce réseau peut comporter 254 machines
+
+** Classification des adresses IP **
+Une adresse réseau est classifiée par rapport à son premier octet
+
+	-Oxxxxxxx : L'adresse est de classe A : Le premier octet en decimale est compris entre 0 et 127.
+	-10xxxxxx : L'adresse est de classe B : Le premier octet en decimale est compris entre 128 et 191.
+	-110xxxxx : L'adresse est de classe C : Le premier octet en decimale est compris entre 192 et 223.
+	-1110xxxx : L'adresse est de classe D; adresse multicast : Le premier octet en decimale est compris entre 224 et 239.
+
+On rappelle qu'une transmission de données est : 
+	-UNICAST lorsque les données sont destinées à un seul destinataire.
+	-MULTICAST lorsque les données sont destinées à un groupe précis de destinataires.
+	-BROATCAST lorsque les données sont envoyées à tout le monde.
+
+**** Types d'adresses IP
+1) Adresse IP publiques ou routables : adresses utilisées pour identifier des machines sur internet.
+	ICANN : c'est l'organisme qui fourni les adresses IP.
+
+Exercice : Donnez les organismes qui s'occupe des services et réseaux de télécommunication.
+- L'Union International des Telecommunication
+	L'UIT est l'institution spécialisée des Nations Unies pour les technologies de l'information et de la communication (TIC).
+	est déterminée à connecter tous les habitants de la planète - quel que soit l'endroit où ils vivent et quels que soient leurs moyens.
+	Par notre travail, elle protège et appuie le droit de chacun à communiquer.
+- IAB : Internet Activities Board (Internet Achitecture Board)
+	Organisme fondé en 1983 en remplacement de l’ICCB (Internet Configuration Control Board). 
+	Ils sont chargés de superviser l’évolution technique de l’internet sous tous les aspects et de proposer les futurs standards. 
+	IPv6 fut par exemple l’une des propositions de l’IAB. 
+	En 1992, lors de la création de l’ISOC qui lui fut rattachée, l’IAB changea de nom.
+- IANA : Internet Assigned Numbers Authority
+	C’est l’IANA, une commission de l’ISOC qui définit au plus haut niveau la politique de nommage des noms de domaine génériques (GTLD) 
+	et de la répartition des adresses IP en quatre classes. 
+	Jon Postel a été le directeur de l’IANA jusqu’à sa mort en 1998 et l’ICANN remplaça alors l’IANA.
+- IETF : Internet Engineering Task Force
+	L’IETF, apparu en 1986, est un groupement international libéral, informel et autonome de bénévoles supervisés par une direction technique (IESG) et l’IAB. 
+	Les membres sont des ingénieurs, concepteurs de réseaux, des opérateurs, des vendeurs ou des chercheurs concernés par l’évolution de l’internet, de ses standards et de son architecture.
+- ISOC : Internet SOCiety
+	Voici la plus célèbre organisation associative à but non lucratif et à vocation internationale, fondée en 1992. C’est l’autorité morale et technique de l’internet, créée pour légaliser le processus de standardisation de l’IETF.
+	Elle se décline en organisation régionale, à l’instar du Chapitre français de l’ISOC France.
+- ICANN : Internet Corporation for Assigned Names and Numbers
+	Il ne s’agit pas d’une branche de l’ISOC mais d’une société indépendante de droit californien à but non lucratif dont l’objet et la coordination technique du système des noms de domaine qui reprend une partie du travail de l’IANA.
+	L’ICANN comprend l’ASO (Adress Supporting Organization) qui coordonne le RIPE, l’ARIN et l’APNIC, la PSO (Protocol SO) traite avec l’IETF, le W3C, l’ETSI et l’ITU, la DNSO (Domain Name SO) qui coordonne les “registrars”
+- ARIN : American Registry for Internet Numbers
+	Le registre administrant la distribution des noms et adresses IP dans les zones Amériques, Caraïbes et Afrique subsaharienne depuis 1997.
+- APNIC : Asia-Pacific Network Information Center
+	Le registre régional d’adresses IP du continent asiatique (sauf le Moyen-Orient) et les pays du Pacifique.
+	Son siège est à Brisbane en Australie. C’est le registre qui doit faire face à la plus grande hétérogénéité, en distance culturelle (Australie, Chine, Pakistan…) et en revenu (Nouvelle-Zélande, Japon Bangladesh, Indonésie…). 
+	L’équipe d’APNIC compte une cinquantaine de personnes, de 18 nationalités et de 8 langues officielles (de l’ourdou au coréen).
+- RIPE : Réseaux IP Européens
+	RIPE est une association d’organisation et d’individus travaillant de manière large sur le protocole IP.
+	L’objectif du RIPE est d’assurer la coordination technique et administrative nécessaire pour l’opérabilité d’un réseau IP pan-européen.
+	RIPE n’est pas un administrateur de réseau lui-même.
+- Le World Wide Web Consortium (W3C), créé en 1994 sous l’impulsion de Tim Berners Lee, s’efforce de promouvoir la standardisation des codes et protocoles et gère l’évolution du Web. 
+Il s’agit d’un consortium géré par le MIT, l’INRIA, et l’université de KEIO) qui rassemble éditeurs et constructeurs de l’industrie informatique ou associations à but non lucratif.
+
+
+
